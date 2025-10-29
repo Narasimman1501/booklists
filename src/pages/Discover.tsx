@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { SearchBar } from "@/components/SearchBar";
 import { BookCard } from "@/components/BookCard";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 interface Book {
   key: string;
@@ -16,13 +18,42 @@ interface Book {
 const Discover = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
+  const [sortBy, setSortBy] = useState("rating");
+  const [genre, setGenre] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const { toast } = useToast();
 
-  const fetchTrendingBooks = async () => {
+  const fetchBooks = async (query: string = "", selectedGenre: string = "all", sort: string = "rating") => {
     setLoading(true);
     try {
+      let searchTerm = query || "bestseller";
+      
+      if (selectedGenre !== "all") {
+        searchTerm = `subject:"${selectedGenre}"`;
+      }
+      
+      if (query && selectedGenre !== "all") {
+        searchTerm = `${query} AND subject:"${selectedGenre}"`;
+      }
+
+      let sortParam = "";
+      switch (sort) {
+        case "rating":
+          sortParam = "&sort=rating";
+          break;
+        case "new":
+          sortParam = "&sort=new";
+          break;
+        case "old":
+          sortParam = "&sort=old";
+          break;
+        case "title":
+          sortParam = "&sort=title";
+          break;
+      }
+      
       const response = await fetch(
-        "https://openlibrary.org/search.json?q=bestseller&limit=24&sort=rating"
+        `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=24${sortParam}`
       );
       const data = await response.json();
       setBooks(data.docs || []);
@@ -38,43 +69,60 @@ const Discover = () => {
   };
 
   const handleSearch = async (query: string) => {
-    if (!query.trim()) {
-      fetchTrendingBooks();
-      return;
-    }
+    setSearchQuery(query);
+    fetchBooks(query, genre, sortBy);
+  };
 
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=24`
-      );
-      const data = await response.json();
-      setBooks(data.docs || []);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to search books. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleSortChange = (value: string) => {
+    setSortBy(value);
+    fetchBooks(searchQuery, genre, value);
+  };
+
+  const handleGenreChange = (value: string) => {
+    setGenre(value);
+    fetchBooks(searchQuery, value, sortBy);
   };
 
   useEffect(() => {
-    fetchTrendingBooks();
+    fetchBooks();
   }, []);
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="space-y-2">
           <h1 className="text-4xl font-bold">Discover Books</h1>
           <p className="text-muted-foreground text-lg">
             Find your next favorite read from millions of books
           </p>
         </div>
+        
         <SearchBar onSearch={handleSearch} placeholder="Search by title, author, or ISBN..." />
+        
+        <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+          <Tabs value={genre} onValueChange={handleGenreChange} className="w-full sm:w-auto">
+            <TabsList className="bg-muted/50">
+              <TabsTrigger value="all">All Genres</TabsTrigger>
+              <TabsTrigger value="fiction">Fiction</TabsTrigger>
+              <TabsTrigger value="fantasy">Fantasy</TabsTrigger>
+              <TabsTrigger value="science fiction">Sci-Fi</TabsTrigger>
+              <TabsTrigger value="romance">Romance</TabsTrigger>
+              <TabsTrigger value="mystery">Mystery</TabsTrigger>
+            </TabsList>
+          </Tabs>
+          
+          <Select value={sortBy} onValueChange={handleSortChange}>
+            <SelectTrigger className="w-full sm:w-[180px] bg-muted/50">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="rating">Highest Rated</SelectItem>
+              <SelectItem value="new">Newest</SelectItem>
+              <SelectItem value="old">Oldest</SelectItem>
+              <SelectItem value="title">Title (A-Z)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       {loading ? (

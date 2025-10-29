@@ -13,8 +13,10 @@ interface BookCardProps {
 }
 
 export const BookCard = ({ id, title, author, coverUrl, rating, genres }: BookCardProps) => {
+  const bookId = id.replace('/works/', '');
+  
   return (
-    <Link to={id}>
+    <Link to={`/works/${bookId}`}>
       <Card className="group overflow-hidden border-border bg-card shadow-card hover:shadow-glow transition-smooth cursor-pointer">
       <div className="relative aspect-[2/3] overflow-hidden bg-muted">
         {coverUrl ? (

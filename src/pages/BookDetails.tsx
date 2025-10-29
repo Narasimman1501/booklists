@@ -27,7 +27,7 @@ const BookDetails = () => {
     const fetchBookDetails = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`https://openlibrary.org${id}.json`);
+        const response = await fetch(`https://openlibrary.org/works/${id}.json`);
         const data = await response.json();
         setBook(data);
       } catch (error) {
