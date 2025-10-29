@@ -1,8 +1,10 @@
 import { Star } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
 interface BookCardProps {
+  id: string;
   title: string;
   author: string;
   coverUrl?: string;
@@ -10,9 +12,10 @@ interface BookCardProps {
   genres?: string[];
 }
 
-export const BookCard = ({ title, author, coverUrl, rating, genres }: BookCardProps) => {
+export const BookCard = ({ id, title, author, coverUrl, rating, genres }: BookCardProps) => {
   return (
-    <Card className="group overflow-hidden border-border bg-card shadow-card hover:shadow-glow transition-smooth cursor-pointer">
+    <Link to={id}>
+      <Card className="group overflow-hidden border-border bg-card shadow-card hover:shadow-glow transition-smooth cursor-pointer">
       <div className="relative aspect-[2/3] overflow-hidden bg-muted">
         {coverUrl ? (
           <img
@@ -49,5 +52,6 @@ export const BookCard = ({ title, author, coverUrl, rating, genres }: BookCardPr
         )}
       </div>
     </Card>
+    </Link>
   );
 };

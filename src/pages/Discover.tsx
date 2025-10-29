@@ -92,6 +92,7 @@ const Discover = () => {
           {books.map((book) => (
             <BookCard
               key={book.key}
+              id={book.key}
               title={book.title}
               author={book.author_name?.[0] || "Unknown Author"}
               coverUrl={
