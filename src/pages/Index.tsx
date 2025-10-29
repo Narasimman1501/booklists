@@ -35,7 +35,16 @@ const Index = () => {
       <section className="text-center space-y-6 py-12">
         <h1 className="text-5xl md:text-6xl font-bold">
           Welcome to{" "}
-          <span className="gradient-primary bg-clip-text text-transparent">BookWorld</span>
+          <span
+            style={{
+              backgroundImage: "linear-gradient(135deg, hsl(217, 91%, 60%), hsl(263, 70%, 50%))",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            BookWorld
+          </span>
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
           Track your reading journey, discover new books, and connect with a community of book lovers

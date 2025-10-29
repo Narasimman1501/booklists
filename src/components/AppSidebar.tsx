@@ -32,7 +32,15 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="p-4">
           {state === "expanded" && (
-            <h1 className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">
+            <h1
+              style={{
+                backgroundImage: "linear-gradient(135deg, hsl(217, 91%, 60%), hsl(263, 70%, 50%))",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+              className="text-2xl font-bold"
+            >
               BookWorld
             </h1>
           )}
