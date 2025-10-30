@@ -26,26 +26,50 @@ const Discover = () => {
   const fetchBooks = async (query: string = "", selectedGenre: string = "all", sort: string = "rating") => {
     setLoading(true);
     try {
-      let searchTerm = query || "bestseller";
+      let searchTerm = query || "fiction";
       
-      if (selectedGenre !== "all") {
-        searchTerm = `subject:"${selectedGenre}"`;
+      // Use better search terms for different scenarios
+      if (!query) {
+        // When no search query, use popular terms that return books with covers
+        switch (sort) {
+          case "new":
+            searchTerm = "fiction has_fulltext:true";
+            break;
+          case "old":
+            searchTerm = "classic literature";
+            break;
+          case "title":
+            searchTerm = "bestseller";
+            break;
+          default:
+            searchTerm = "bestseller";
+        }
       }
       
-      if (query && selectedGenre !== "all") {
-        searchTerm = `${query} AND subject:"${selectedGenre}"`;
+      if (selectedGenre !== "all") {
+        if (query) {
+          searchTerm = `${query} AND subject:"${selectedGenre}"`;
+        } else {
+          searchTerm = `subject:"${selectedGenre}"`;
+        }
       }
 
       let sortParam = "";
+      let additionalParams = "";
+      
       switch (sort) {
         case "rating":
           sortParam = "&sort=rating";
           break;
         case "new":
           sortParam = "&sort=new";
+          // Add year filter to get books with better metadata
+          const currentYear = new Date().getFullYear();
+          additionalParams = `&publish_year=${currentYear - 5}-${currentYear}`;
           break;
         case "old":
           sortParam = "&sort=old";
+          additionalParams = "&publish_year=1800-1990";
           break;
         case "title":
           sortParam = "&sort=title";
@@ -53,10 +77,13 @@ const Discover = () => {
       }
       
       const response = await fetch(
-        `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=24${sortParam}`
+        `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=24${sortParam}${additionalParams}`
       );
       const data = await response.json();
-      setBooks(data.docs || []);
+      
+      // Filter books to only show those with covers
+      const booksWithCovers = (data.docs || []).filter((book: Book) => book.cover_i);
+      setBooks(booksWithCovers);
     } catch (error) {
       toast({
         title: "Error",
