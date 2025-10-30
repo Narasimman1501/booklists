@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { BookCard } from "@/components/BookCard";
 import { useToast } from "@/hooks/use-toast";
@@ -16,11 +17,15 @@ interface Book {
 }
 
 const Discover = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
-  const [sortBy, setSortBy] = useState("rating");
-  const [genre, setGenre] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  
+  // Get state from URL or use defaults
+  const sortBy = searchParams.get("sort") || "rating";
+  const genre = searchParams.get("genre") || "all";
+  const searchQuery = searchParams.get("q") || "";
+  
   const { toast } = useToast();
 
   const fetchBooks = async (query: string = "", selectedGenre: string = "all", sort: string = "rating") => {
@@ -99,23 +104,20 @@ const Discover = () => {
   };
 
   const handleSearch = async (query: string) => {
-    setSearchQuery(query);
-    fetchBooks(query, genre, sortBy);
+    setSearchParams({ q: query, genre, sort: sortBy });
   };
 
   const handleSortChange = (value: string) => {
-    setSortBy(value);
-    fetchBooks(searchQuery, genre, value);
+    setSearchParams({ q: searchQuery, genre, sort: value });
   };
 
   const handleGenreChange = (value: string) => {
-    setGenre(value);
-    fetchBooks(searchQuery, value, sortBy);
+    setSearchParams({ q: searchQuery, genre: value, sort: sortBy });
   };
 
   useEffect(() => {
-    fetchBooks();
-  }, []);
+    fetchBooks(searchQuery, genre, sortBy);
+  }, [searchQuery, genre, sortBy]);
 
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
