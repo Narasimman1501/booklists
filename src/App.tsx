@@ -11,6 +11,9 @@ import NotFound from "./pages/NotFound";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MyList from './pages/MyList';
 import Login from './pages/Login';
+import Lists from './pages/Lists';
+import Profile from './pages/Profile';
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -24,6 +27,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/discover" element={<Discover />} />
             <Route path="/works/:id" element={<BookDetails />} />
+            <Route path="/lists" element={<Lists />} />
+            <Route path="/profile" element={<Profile />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
