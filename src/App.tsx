@@ -8,7 +8,9 @@ import Index from "./pages/Index";
 import Discover from "./pages/Discover";
 import BookDetails from "./pages/BookDetails";
 import NotFound from "./pages/NotFound";
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MyList from './pages/MyList';
+import Login from './pages/Login';
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -30,5 +32,15 @@ const App = () => (
     </TooltipProvider>
   </QueryClientProvider>
 );
-
+function App() {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/my-list" element={<MyList />} />
+        <Route path="/login" element={<Login />} />
+        {/* Other routes */}
+      </Routes>
+    </Router>
+  );
+}
 export default App;
