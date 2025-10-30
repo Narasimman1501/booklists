@@ -26,12 +26,14 @@ const BookDetails = () => {
 
   // Check if book is already in list
   useEffect(() => {
-    const myList = JSON.parse(localStorage.getItem("myBookList") || "[]");
+    if (!id) return;
+    const myList: string[] = JSON.parse(localStorage.getItem("myBookList") || "[]");
     setIsInList(myList.some((bookId: string) => bookId === id));
   }, [id]);
 
   const handleAddToList = () => {
-    const myList = JSON.parse(localStorage.getItem("myBookList") || "[]");
+    if (!id) return;
+    const myList: string[] = JSON.parse(localStorage.getItem("myBookList") || "[]");
     
     if (isInList) {
       // Remove from list
