@@ -13,9 +13,7 @@ import MyList from './pages/MyList';
 import Login from './pages/Login';
 import Lists from './pages/Lists';
 import Profile from './pages/Profile';
-
 const queryClient = new QueryClient();
-
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
@@ -48,4 +46,25 @@ function App() {
     </Router>
   );
 }
-export default App;
+const AppV2 = () => (
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <MainLayout>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/discover" element={<Discover />} />
+            <Route path="/works/:id" element={<BookDetails />} />
+            <Route path="/lists" element={<Lists />} />
+            <Route path="/profile" element={<Profile />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </MainLayout>
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
+);
+export default AppV2;
