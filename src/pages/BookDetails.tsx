@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Star } from "lucide-react";
+import { ArrowLeft, Star, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -21,7 +21,38 @@ const BookDetails = () => {
   const navigate = useNavigate();
   const [book, setBook] = useState<BookDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isInList, setIsInList] = useState(false);
   const { toast } = useToast();
+
+  // Check if book is already in list
+  useEffect(() => {
+    const myList = JSON.parse(localStorage.getItem("myBookList") || "[]");
+    setIsInList(myList.some((bookId: string) => bookId === id));
+  }, [id]);
+
+  const handleAddToList = () => {
+    const myList = JSON.parse(localStorage.getItem("myBookList") || "[]");
+    
+    if (isInList) {
+      // Remove from list
+      const updatedList = myList.filter((bookId: string) => bookId !== id);
+      localStorage.setItem("myBookList", JSON.stringify(updatedList));
+      setIsInList(false);
+      toast({
+        title: "Removed from list",
+        description: "Book has been removed from your list.",
+      });
+    } else {
+      // Add to list
+      myList.push(id);
+      localStorage.setItem("myBookList", JSON.stringify(myList));
+      setIsInList(true);
+      toast({
+        title: "Added to list",
+        description: "Book has been added to your list.",
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -154,8 +185,14 @@ const BookDetails = () => {
                   <p className="text-sm text-muted-foreground">Favorites</p>
                 </div>
                 <div className="flex-1 min-w-[200px]">
-                  <Button className="w-full" size="lg">
-                    Add to List
+                  <Button 
+                    className="w-full gap-2" 
+                    size="lg"
+                    onClick={handleAddToList}
+                    variant={isInList ? "secondary" : "default"}
+                  >
+                    {isInList && <Check className="w-5 h-5" />}
+                    {isInList ? "In List" : "Add to List"}
                   </Button>
                 </div>
               </div>

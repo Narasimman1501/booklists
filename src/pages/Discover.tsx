@@ -132,16 +132,27 @@ const Discover = () => {
         <SearchBar onSearch={handleSearch} placeholder="Search by title, author, or ISBN..." />
         
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          <Tabs value={genre} onValueChange={handleGenreChange} className="w-full sm:w-auto">
-            <TabsList className="bg-muted/50">
-              <TabsTrigger value="all">All books</TabsTrigger>
-              <TabsTrigger value="fiction">Fiction</TabsTrigger>
-              <TabsTrigger value="fantasy">Fantasy</TabsTrigger>
-              <TabsTrigger value="science fiction">Sci-Fi</TabsTrigger>
-              <TabsTrigger value="romance">Romance</TabsTrigger>
-              <TabsTrigger value="mystery">Mystery</TabsTrigger>
-            </TabsList>
-          </Tabs>
+          <div className="w-full sm:w-auto overflow-x-auto">
+            <Tabs value={genre} onValueChange={handleGenreChange} className="w-full sm:w-auto">
+              <TabsList className="bg-muted/50 flex-wrap h-auto">
+                <TabsTrigger value="all">All books</TabsTrigger>
+                <TabsTrigger value="fiction">Fiction</TabsTrigger>
+                <TabsTrigger value="fantasy">Fantasy</TabsTrigger>
+                <TabsTrigger value="science fiction">Sci-Fi</TabsTrigger>
+                <TabsTrigger value="romance">Romance</TabsTrigger>
+                <TabsTrigger value="mystery">Mystery</TabsTrigger>
+                <TabsTrigger value="thriller">Thriller</TabsTrigger>
+                <TabsTrigger value="horror">Horror</TabsTrigger>
+                <TabsTrigger value="adventure">Adventure</TabsTrigger>
+                <TabsTrigger value="drama">Drama</TabsTrigger>
+                <TabsTrigger value="comedy">Comedy</TabsTrigger>
+                <TabsTrigger value="historical fiction">Historical</TabsTrigger>
+                <TabsTrigger value="biography">Biography</TabsTrigger>
+                <TabsTrigger value="poetry">Poetry</TabsTrigger>
+                <TabsTrigger value="philosophy">Philosophy</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
           
           <Select value={sortBy} onValueChange={handleSortChange}>
             <SelectTrigger className="w-full sm:w-[180px] bg-muted/50">
