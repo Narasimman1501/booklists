@@ -57,6 +57,9 @@ const Discover = () => {
       let sortParam = "";
       let additionalParams = "";
       
+      // Increase limit for "All books" view
+      const limit = selectedGenre === "all" ? 300 : 24;
+      
       switch (sort) {
         case "rating":
           sortParam = "&sort=rating";
@@ -77,7 +80,7 @@ const Discover = () => {
       }
       
       const response = await fetch(
-        `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=24${sortParam}${additionalParams}`
+        `https://openlibrary.org/search.json?q=${encodeURIComponent(searchTerm)}&limit=${limit}${sortParam}${additionalParams}`
       );
       const data = await response.json();
       
@@ -129,7 +132,7 @@ const Discover = () => {
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <Tabs value={genre} onValueChange={handleGenreChange} className="w-full sm:w-auto">
             <TabsList className="bg-muted/50">
-              <TabsTrigger value="all">All Genres</TabsTrigger>
+              <TabsTrigger value="all">All books</TabsTrigger>
               <TabsTrigger value="fiction">Fiction</TabsTrigger>
               <TabsTrigger value="fantasy">Fantasy</TabsTrigger>
               <TabsTrigger value="science fiction">Sci-Fi</TabsTrigger>
